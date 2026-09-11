@@ -1,72 +1,89 @@
 #include <iostream>
 #include <string>
+#include <cmath>
+#include <vector>
 
 using namespace std;
 
-// Global variables for input strings and parsed integers
-string a, b;
-int n, m;
-
-// Validates whether an input string contains only numeric digits (0-9).
-// Returns false for negative numbers, decimals, or non-numeric characters.
 bool check(string a) {
-	for (int i = 0; i < a.size(); i++) {
-		if (a[i] < '0' || a[i] > '9') {
-			return false;
-		}
-	}
-	return true;
+    if (a.empty()) return false;
+    for (size_t i = 0; i < a.size(); i++) {
+        if (a[i] < '0' || a[i] > '9') {
+            return false;
+        }
+    }
+    return true;
 }
 
-// Checks whether the length of the string input does not exceed 4 digits
-// to prevent integer overflow when parsing.
-bool check_value(string a) {
-	if (a.size() > 4) return false;
-	return true;
+bool check_value(string a, string b) {
+    int v = stoi(a);
+    int l = stoi(b);
+    double vkl = l * log10(v);
+    double lim = 64 * log10(2);
+    return vkl < lim;
 }
 
-// Computes a raised to the power of b (a^b).
-// Handles non-negative exponents, including 0 (where a^0 = 1).
-int power(int a, int b) {
-	int res = 1; 
-	for (int i = 1; i <= b; i++) {
-		res *= a;
-	}
-	return res;
+unsigned long long power(unsigned int a, unsigned int b) {
+    long long res = 1;
+    for (int i = 1; i <= b; i++) {
+        res *= a;
+    }
+    return res;
 }
 
-// Calculates the sum of all individual digits in an integer.
-int sum_digits(int a) {
-	int res = 0;
-	while (a != 0) {
-		res += a % 10; // Extract and add the last digit
-		a = a / 10;    // Remove the last digit
-	}
-	return res;
+vector<int> vectorize_digits(unsigned long long a){
+    vector<int> v;
+    if (a == 0) return {0};
+    while (a != 0) {
+        v.push_back(a % 10);
+        a = a / 10;
+    }
+    return v;
 }
 
-int main() {
-	// Read inputs for base and exponent
-	cin >> a >> b;
+int sum_vector(vector<int> a) {
+    int res = 0;
+    for (size_t i = 0; i < a.size(); i++) {
+        res += a[i];
+    }
+    return res;
+}
 
-	// Validate that inputs consist only of positive integers/digits
-	if (!check(a) || !check(b)) {
-		cout << "Integer only and no negatives allowed!";
+int main(int argc, char* argv[]) {
+	if (argc != 3) {
+        cout << "Usage: ./pds <base> <exponent>\n";
+        return 1;
+    }
+    
+	string a,b;
+    a = argv[1];
+    b = argv[2];
+
+	if(!check(a) or !check(b) or a.empty() or b.empty()){
+		cout << "integer only";
 		return 0;
 	}
-
-	// Validate that input sizes are within acceptable limits
-	if (!check_value(a) || !check_value(b)) {
-		cout << "value too large";
+	
+    if(a[0] == '-' or b[0] == '-'){
+		cout << "value can not be negative";
 		return 0;
 	}
+	
+    if (!check_value(a, b)) {
+        cout << "value too large";
+        return 0;
+    }
+    
+	unsigned int n,m;
+    n = stoi(a);
+    m = stoi(b);
 
-	// Convert validated string inputs to integer values
-	n = stoi(a);
-	m = stoi(b);
-
-	// Compute n^m, sum its digits, and output the result
-	cout << sum_digits(power(n, m));
-
-	return 0;
+    long long tmp = power(n, m);
+    
+    cout << a << "^" << b << " = " << tmp << endl;
+    
+    cout << "Sum Of Digits: " << sum_vector(vectorize_digits(tmp)) << endl;
+    
+    return 0;
+	
 }
