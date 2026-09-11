@@ -14,7 +14,7 @@ bool check(string a) {
     }
     return true;
 }
-
+// Keeping it below 64 bits ensures the result fits in unsigned long long.
 bool check_value(string a, string b) {
     int v = stoi(a);
     int l = stoi(b);
