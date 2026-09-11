@@ -18,6 +18,9 @@ bool check(string a) {
 bool check_value(string a, string b) {
     int v = stoi(a);
     int l = stoi(b);
+    if (v == 0) {
+        return true;
+    }
     double vkl = l * log10(v);
     double lim = 64 * log10(2);
     return vkl < lim;
